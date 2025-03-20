@@ -1,0 +1,634 @@
+:root {
+    /* Couleurs DragonFly - thème clair */
+    --primary-color: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --text-color: #1f2937;
+    --bg-color: #f9fafb;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+    --error-color: #ef4444;
+    --success-color: #6366f1; /* Indigo DragonFly */
+    --stage-waiting: #d1d5db;
+    --stage-active: #6366f1;
+    --stage-complete: #6366f1; /* Indigo DragonFly */
+    --stage-error: #ef4444;
+}
+
+[data-theme="dark"] {
+    /* Couleurs DragonFly - thème sombre */
+    --primary-color: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --text-color: #f9fafb;
+    --bg-color: #111827;
+    --card-bg: #1f2937;
+    --border-color: #374151;
+    --error-color: #f87171;
+    --success-color: #818cf8; /* Version plus claire de l'indigo DragonFly */
+    --stage-waiting: #4b5563;
+    --stage-active: #6366f1;
+    --stage-complete: #818cf8; /* Version plus claire de l'indigo DragonFly */
+    --stage-error: #f87171;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: var(--primary-color);
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Layout pour grands écrans */
+@media (min-width: 992px) {
+    main {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .card {
+        flex: 1;
+        min-width: 45%;
+        margin: 0.5rem;
+    }
+    
+    .progress-card, .result-card {
+        width: 100%;
+        flex-basis: 100%;
+    }
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 2rem;
+    transition: background-color 0.3s;
+}
+
+.result-card, .progress-card {
+    margin-top: 1rem;
+}
+
+/* Theme toggle */
+.theme-toggle {
+    position: relative;
+}
+
+.theme-toggle-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 60px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: var(--primary-color);
+    position: relative;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.theme-toggle-label .sun-icon,
+.theme-toggle-label .moon-icon {
+    color: white;
+    font-size: 14px;
+    z-index: 1;
+}
+
+.toggle-ball {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: white;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s;
+}
+
+#theme-toggle-checkbox {
+    display: none;
+}
+
+#theme-toggle-checkbox:checked + .theme-toggle-label .toggle-ball {
+    transform: translateX(30px);
+}
+
+/* Drop area */
+.drop-area {
+    border: 2px dashed var(--primary-light);
+    border-radius: 0.5rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: var(--card-bg);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.drop-area.drag-active {
+    background-color: rgba(65, 168, 144, 0.1); /* Vert Cloud Temple avec opacité */
+    border-color: var(--primary-color);
+}
+
+.upload-icon {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.upload-limits {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 1rem;
+}
+
+/* Selected files */
+#selected-files {
+    margin-bottom: 1.5rem;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    background-color: rgba(65, 168, 144, 0.05); /* Vert Cloud Temple avec opacité */
+}
+
+.file-item .file-icon {
+    color: var(--primary-color);
+    margin-right: 0.75rem;
+}
+
+.file-item .file-name {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.file-item .file-size {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-right: 0.75rem;
+}
+
+.file-item .file-action {
+    color: var(--error-color);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1rem;
+}
+
+.file-item .file-preview-btn {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1rem;
+}
+
+/* PDF Preview */
+#pdf-preview-container {
+    margin-bottom: 1.5rem;
+    max-height: 400px;
+    overflow: auto;
+}
+
+#pdf-preview {
+    width: 100%;
+    height: 300px;
+    border: 1px solid var(--border-color);
+    background-color: rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+#pdf-preview canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Form controls */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    font-family: inherit;
+    resize: vertical;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+}
+
+#analyze-btn {
+    width: 100%;
+}
+
+#new-analysis-btn {
+    margin-top: 1.5rem;
+}
+
+/* Progress stages */
+.progress-stages {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.progress-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 80px;
+}
+
+.stage-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--card-bg);
+    border: 2px solid var(--stage-waiting);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    color: var(--stage-waiting);
+    transition: all 0.3s;
+}
+
+.stage-label {
+    font-size: 0.8rem;
+    color: var(--stage-waiting);
+    text-align: center;
+    transition: color 0.3s;
+}
+
+.stage-status {
+    font-size: 0.6rem;
+    margin-top: 0.25rem;
+    color: var(--stage-waiting);
+}
+
+.progress-stage.active .stage-icon {
+    border-color: var(--stage-active);
+    color: var(--stage-active);
+}
+
+.progress-stage.active .stage-label {
+    color: var(--stage-active);
+    font-weight: 500;
+}
+
+.progress-stage.active .stage-status {
+    color: var(--stage-active);
+}
+
+.progress-stage.complete .stage-icon {
+    border-color: var(--stage-complete);
+    color: var(--stage-complete);
+}
+
+.progress-stage.complete .stage-label {
+    color: var(--stage-complete);
+}
+
+.progress-stage.complete .stage-status {
+    color: var(--stage-complete);
+}
+
+.progress-stage.error .stage-icon {
+    border-color: var(--stage-error);
+    color: var(--stage-error);
+}
+
+.progress-stage.error .stage-label {
+    color: var(--stage-error);
+}
+
+.progress-stage.error .stage-status {
+    color: var(--stage-error);
+}
+
+.progress-line {
+    flex: 1;
+    height: 2px;
+    background-color: var(--stage-waiting);
+    transition: background-color 0.3s;
+}
+
+.progress-line.active {
+    background-color: var(--stage-active);
+}
+
+.progress-line.complete {
+    background-color: var(--stage-complete);
+}
+
+.progress-detail {
+    text-align: center;
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    background-color: rgba(139, 92, 246, 0.05);
+    font-size: 0.9rem;
+}
+
+/* Tabs pour multi PDF */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.tab {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem 0.25rem 0 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    user-select: none;
+    margin-right: 0.25rem;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background-color: transparent;
+    color: var(--text-color);
+}
+
+.tab:hover {
+    background-color: rgba(65, 168, 144, 0.05); /* Vert Cloud Temple avec opacité */
+}
+
+.tab.active {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    font-weight: 500;
+    color: var(--primary-color);
+    position: relative;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 2px;
+    background-color: var(--card-bg);
+}
+
+/* Results */
+.hidden {
+    display: none !important;
+}
+
+#result-content {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* Loader */
+.loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(139, 92, 246, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Streaming indicator */
+.typing-indicator {
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.typing-indicator span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    display: inline-block;
+    animation: pulse 1s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(0.7);
+        opacity: 0.4;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Markdown formatting */
+#result-content h1, #result-content h2, #result-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+#result-content p {
+    margin-bottom: 1rem;
+}
+
+#result-content ul, #result-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#result-content pre {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+#result-content code {
+    font-family: monospace;
+}
+
+#result-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+#result-content th, #result-content td {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    text-align: left;
+}
+
+#result-content th {
+    background-color: rgba(139, 92, 246, 0.1);
+}
+
+.error-message {
+    color: var(--error-color);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--error-color);
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .card {
+        padding: 1.5rem;
+    }
+    
+    .drop-area {
+        padding: 2rem 1rem;
+    }
+    
+    .progress-stages {
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+    
+    .progress-stage {
+        min-width: 70px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+}

@@ -1,0 +1,570 @@
+/* Base styles */
+:root {
+  --primary-color: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --text-color: #1f2937;
+  --bg-color: #f9fafb;
+  --card-bg: #ffffff;
+  --border-color: #e5e7eb;
+  --error-color: #ef4444;
+  --success-color: #10b981;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* App container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.tab-btn.active {
+  background-color: white;
+  color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .tabs {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .tab-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+.app-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.app-footer {
+  background-color: var(--text-color);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.875rem;
+}
+
+/* Card component */
+.card {
+  background-color: var(--card-bg);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.card-content {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 992px) {
+  .card-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Button component */
+.btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-ghost:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Switch component */
+.switch-container {
+  display: inline-block;
+  position: relative;
+  width: 48px;
+  height: 24px;
+}
+
+.switch-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-label {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 24px;
+  transition: 0.4s;
+}
+
+.switch-label:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+.switch-input:checked + .switch-label {
+  background-color: var(--primary-color);
+}
+
+.switch-input:checked + .switch-label:before {
+  transform: translateX(24px);
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+.border-r {
+  border-right: 1px solid var(--border-color);
+}
+
+.pr-4 {
+  padding-right: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.p-3 {
+  padding: 0.75rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.border {
+  border: 1px solid var(--border-color);
+}
+
+.border-2 {
+  border-width: 2px;
+}
+
+.border-dashed {
+  border-style: dashed;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.text-gray-400 {
+  color: #9ca3af;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-white {
+  color: white;
+}
+
+.bg-primary\/10 {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+.bg-primary {
+  background-color: var(--primary-color);
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.h-4 {
+  height: 1rem;
+}
+
+.h-5 {
+  height: 1.25rem;
+}
+
+.h-8 {
+  height: 2rem;
+}
+
+.w-4 {
+  width: 1rem;
+}
+
+.w-5 {
+  width: 1.25rem;
+}
+
+.w-8 {
+  width: 2rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.max-w-4xl {
+  max-width: 56rem;
+}
+
+.max-w-\[80\%\] {
+  max-width: 80%;
+}
+
+.min-h-\[600px\] {
+  min-height: 600px;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+
+.hidden {
+  display: none;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Chat component styles */
+.chat-container {
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.messages-container {
+  height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.welcome-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.message {
+  display: flex;
+  max-width: 85%;
+}
+
+.user-message {
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+.assistant-message {
+  align-self: flex-start;
+}
+
+.message-content {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  position: relative;
+}
+
+.user-message .message-content {
+  background-color: var(--primary-color);
+  color: white;
+  border-top-right-radius: 0;
+}
+
+.assistant-message .message-content {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-top-left-radius: 0;
+}
+
+.chat-input-container {
+  margin-top: auto;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--card-bg);
+  width: 90%;
+  max-width: 500px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+/* Additional utility classes */
+.text-4xl {
+  font-size: 2.25rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.border-t {
+  border-top: 1px solid var(--border-color);
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #f9fafb;
+    --bg-color: #111827;
+    --card-bg: #1f2937;
+    --border-color: #374151;
+  }
+
+  .bg-gray-100 {
+    background-color: #374151;
+  }
+
+  .dark\:bg-gray-800 {
+    background-color: #1f2937;
+  }
+  
+  .assistant-message .message-content {
+    background-color: #2d3748;
+  }
+}
