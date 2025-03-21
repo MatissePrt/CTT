@@ -2,7 +2,6 @@
 const dropArea = document.getElementById('drop-area');
 const fileInput = document.getElementById('file-input');
 const analyzeBtn = document.getElementById('analyze-btn');
-const instructionInput = document.getElementById('instruction');
 const resultContainer = document.getElementById('result-container');
 const loader = document.getElementById('loader');
 const resultContent = document.getElementById('result-content');
@@ -132,10 +131,10 @@ function updateFileList() {
     });
 }
 
-// Format file size for display
+// Format file size for display - simplifié
 function formatFileSize(bytes) {
     if (bytes < 1024) return bytes + ' B';
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else if (bytes < 1048576) return Math.round(bytes / 1024) + ' KB';
     else return (bytes / 1048576).toFixed(1) + ' MB';
 }
 
@@ -148,72 +147,70 @@ function removeFile(index) {
     analyzeBtn.disabled = selectedFiles.length === 0;
 }
 
-
-// Handle analyze button click
+// Handle analyze button click - optimisé
 async function handleAnalyze() {
     if (selectedFiles.length === 0) return;
     
-    // Close any ongoing streams
+    // Fermer tout stream en cours
     if (eventSource) {
         eventSource.close();
         eventSource = null;
     }
     
-    // Reset results
+    // Réinitialiser les résultats
     analysisResults = {};
     
-    // Show progress container
+    // Préparer l'UI pour l'analyse
     progressContainer.classList.remove('hidden');
     resetProgress();
     setProgressStage('upload', 'active');
+    closeAnalysisBtn.classList.remove('hidden');
     
-    // Get the instruction text
-    const instruction = instructionInput.value.trim();
-    
-    // Process one file at a time
+    // Traiter chaque fichier
     for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
+        const fileIndex = i + 1;
+        const totalFiles = selectedFiles.length;
         
-        // Update progress
-        setProgressStage('upload', 'active');
-        progressDetail.textContent = `Traitement de ${file.name} (${i+1}/${selectedFiles.length})...`;
+        // Mise à jour de la progression
+        progressDetail.textContent = `Traitement de ${file.name} (${fileIndex}/${totalFiles})`;
         
-        // Create FormData
+        // Préparer les données
         const formData = new FormData();
         formData.append('pdf', file);
-        if (instruction) {
-            formData.append('instruction', instruction);
-        }
         
         try {
-            // Upload file
+            // Phase d'upload
             setProgressDetail(`Envoi de ${file.name}...`);
             
-            // Extraction phase
-            setProgressStage('extract', 'active');
-            setProgressStage('upload', 'complete');
-            setProgressDetail(`Extraction du texte de ${file.name}...`);
+            // Phase d'extraction (simulation visuelle)
+            setTimeout(() => {
+                setProgressStage('extract', 'active');
+                setProgressStage('upload', 'complete');
+                setProgressDetail(`Extraction du texte de ${file.name}...`);
+            }, 300);
             
-            // Analysis phase
+            // Petite pause pour simulation visuelle de l'extraction 
+            await new Promise(resolve => setTimeout(resolve, 600));
+            
+            // Phase d'analyse
             setProgressStage('analyze', 'active');
             setProgressStage('extract', 'complete');
             setProgressDetail(`Analyse de ${file.name} par l'IA...`);
             
-            // Décider si on utilise le streaming ou l'API standard
+            // Utiliser l'API appropriée selon la taille du fichier
             if (useStreaming(file)) {
-                // Streaming API
                 await handleStreamingAnalysis(file, formData, i);
             } else {
-                // Standard API
                 await handleStandardAnalysis(file, formData, i);
             }
             
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Erreur:', error);
             setProgressStage('analyze', 'error');
             setProgressDetail(`Erreur: ${error.message}`);
             
-            // Still show any successful results
+            // Afficher quand même les résultats partiels si disponibles
             if (Object.keys(analysisResults).length > 0) {
                 displayResults();
             }
@@ -260,7 +257,6 @@ async function handleStandardAnalysis(file, formData, fileIndex) {
 async function handleStreamingAnalysis(file, formData, fileIndex) {
     // Préparer l'affichage des résultats pour le streaming
     setProgressDetail(`Analyse de ${file.name} par l'IA (streaming)...`);
-    resultContainer.classList.remove('hidden');
     
     if (selectedFiles.length > 1) {
         // Setup des onglets pour multiple fichiers
@@ -409,9 +405,6 @@ function setProgressDetail(text) {
 
 // Display results
 function displayResults() {
-    // Show result container
-    resultContainer.classList.remove('hidden');
-    
     // Check how many results we have
     const fileNames = Object.keys(analysisResults);
     
@@ -456,7 +449,7 @@ function displayResults() {
     displaySingleResult(fileNames[0]);
 }
 
-// Display a single result
+// Display a single result - amélioré
 function displaySingleResult(fileName) {
     const result = analysisResults[fileName];
     
@@ -476,24 +469,55 @@ function displaySingleResult(fileName) {
     if (result.choices && result.choices[0] && result.choices[0].message) {
         const content = result.choices[0].message.content;
         resultContent.innerHTML = formatMarkdown(content);
+        
+        // Mettre en évidence les éléments importants
+        highlightResults();
     } else {
         // Display raw JSON if format is unexpected
         resultContent.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-        console.error('Unexpected response format:', result);
+        console.error('Format de réponse inattendu:', result);
     }
 }
 
-// Format markdown content
+// Mettre en évidence des éléments critiques dans l'analyse
+function highlightResults() {
+    // Mettre en évidence les références
+    const refPattern = /#\d{3}/g;
+    let elements = resultContent.querySelectorAll('td, p, li');
+    
+    elements.forEach(el => {
+        if (el.innerHTML.match(refPattern)) {
+            el.innerHTML = el.innerHTML.replace(refPattern, match => 
+                `<span class="highlight">${match}</span>`);
+        }
+        
+        // Mettre en évidence les mots clés d'alerte
+        const alertKeywords = ['Erreur', 'Alerte', 'Critique', 'Échec', 'Bruteforce', 'Suspect'];
+        alertKeywords.forEach(keyword => {
+            const regex = new RegExp(keyword, 'gi');
+            if (el.innerHTML.match(regex)) {
+                el.innerHTML = el.innerHTML.replace(regex, match => 
+                    `<span class="alert-text">${match}</span>`);
+            }
+        });
+    });
+}
+
+// Format markdown content - amélioré
 function formatMarkdown(text) {
-    // This is a more comprehensive markdown formatter
+    // Préformatage: nettoyage et normalisation
+    text = text.replace(/\r\n/g, '\n');
     
     // Code blocks
     text = text.replace(/```([a-z]*)\n([\s\S]+?)```/g, '<pre><code class="language-$1">$2</code></pre>');
     
-    // Headers
-    text = text.replace(/^### (.*$)/gm, '<h3>$1</h3>');
-    text = text.replace(/^## (.*$)/gm, '<h2>$1</h2>');
-    text = text.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+    // Headers avec ids pour navigation
+    text = text.replace(/^### (.*$)/gm, (match, p1) => 
+        `<h3 id="${p1.toLowerCase().replace(/[^\w]+/g, '-')}">${p1}</h3>`);
+    text = text.replace(/^## (.*$)/gm, (match, p1) => 
+        `<h2 id="${p1.toLowerCase().replace(/[^\w]+/g, '-')}">${p1}</h2>`);
+    text = text.replace(/^# (.*$)/gm, (match, p1) => 
+        `<h1 id="${p1.toLowerCase().replace(/[^\w]+/g, '-')}">${p1}</h1>`);
     
     // Bold & Italic
     text = text.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
@@ -509,14 +533,13 @@ function formatMarkdown(text) {
     text = text.replace(/(<li>.*<\/li>\n)+/g, '<ul>$&</ul>');
     
     // Tables
-    // This is a simplified table parser
     const tableRegex = /\n((?:\|[^\n]+\|\n)+)/g;
     const headerRowRegex = /\|(.+)\|\n\|([-:| ]+)\|\n/;
     
     text = text.replace(tableRegex, (match) => {
         // Check if it has a header row
         const headerMatch = match.match(headerRowRegex);
-        let table = '<table>';
+        let table = '<table class="markdown-table">';
         
         if (headerMatch) {
             // Add header
@@ -565,6 +588,11 @@ function formatMarkdown(text) {
             p.startsWith('<hr>')) {
             return p;
         }
+        
+        // Améliorer les dates, heures, et autres données sensibles
+        p = p.replace(/(\d{4}-\d{2}-\d{2})/g, '<span class="date">$1</span>');
+        p = p.replace(/(Badge_[A-Za-z0-9_]+)/g, '<span class="badge-id">$1</span>');
+        
         return `<p>${p.replace(/\n/g, '<br>')}</p>`;
     }).join('');
 }
@@ -576,15 +604,18 @@ function resetUI() {
     selectedFiles = [];
     updateFileList();
     
-    // Reset instruction
-    instructionInput.value = '';
-    
-    // Reset preview variables (element no longer exists)
+    // Reset preview variables
     currentPreviewFile = null;
     
-    // Hide progress and results
+    // Hide progress info
     progressContainer.classList.add('hidden');
-    resultContainer.classList.add('hidden');
+    
+    // Show the waiting message
+    resultContent.innerHTML = '<div class="waiting-message"><i class="fas fa-arrow-left"></i> Veuillez sélectionner des fichiers PDF à analyser</div>';
+    
+    // Hide close button and tabs
+    closeAnalysisBtn.classList.add('hidden');
+    resultTabs.classList.add('hidden');
     
     // Disable analyze button
     analyzeBtn.disabled = true;
@@ -598,7 +629,6 @@ function resetUI() {
         eventSource = null;
     }
 }
-
 
 // Initialize app
 function init() {
@@ -637,6 +667,9 @@ function init() {
         document.documentElement.setAttribute('data-theme', 'dark');
         themeToggle.checked = true;
     }
+    
+    // Initialize with waiting message
+    resetUI();
 }
 
 // Initialize on page load

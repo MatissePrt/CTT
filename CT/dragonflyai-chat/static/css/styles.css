@@ -1,35 +1,35 @@
 :root {
-    /* Couleurs DragonFly - thème clair */
-    --primary-color: #6366f1;
-    --primary-light: #818cf8;
-    --primary-dark: #4f46e5;
-    --text-color: #1f2937;
-    --bg-color: #f9fafb;
+    /* Couleurs DragonFly - thème clair avec meilleur contraste */
+    --primary-color: #41a890; /* Vert turquoise */
+    --primary-light: #65c2ad; /* Version plus claire */
+    --primary-dark: #348a76; /* Version plus foncée */
+    --text-color: #1e293b; /* Texte légèrement plus foncé */
+    --bg-color: #f8fafc; /* Fond légèrement plus clair */
     --card-bg: #ffffff;
-    --border-color: #e5e7eb;
-    --error-color: #ef4444;
-    --success-color: #6366f1; /* Indigo DragonFly */
-    --stage-waiting: #d1d5db;
-    --stage-active: #6366f1;
-    --stage-complete: #6366f1; /* Indigo DragonFly */
-    --stage-error: #ef4444;
+    --border-color: #cbd5e1; /* Bordure plus visible */
+    --error-color: #dc2626; /* Rouge plus contrasté */
+    --success-color: #41a890; /* Vert turquoise */
+    --stage-waiting: #94a3b8; /* Gris plus contrasté */
+    --stage-active: #41a890; /* Vert turquoise */
+    --stage-complete: #41a890; /* Vert turquoise */
+    --stage-error: #dc2626;
 }
 
 [data-theme="dark"] {
-    /* Couleurs DragonFly - thème sombre */
-    --primary-color: #6366f1;
-    --primary-light: #818cf8;
-    --primary-dark: #4f46e5;
-    --text-color: #f9fafb;
-    --bg-color: #111827;
-    --card-bg: #1f2937;
-    --border-color: #374151;
-    --error-color: #f87171;
-    --success-color: #818cf8; /* Version plus claire de l'indigo DragonFly */
-    --stage-waiting: #4b5563;
-    --stage-active: #6366f1;
-    --stage-complete: #818cf8; /* Version plus claire de l'indigo DragonFly */
-    --stage-error: #f87171;
+    /* Couleurs DragonFly - thème sombre avec meilleur contraste */
+    --primary-color: #4ebfa6; /* Vert turquoise légèrement plus clair pour le thème sombre */
+    --primary-light: #7ad0bf; /* Version plus claire */
+    --primary-dark: #389985; /* Version plus foncée */
+    --text-color: #f1f5f9; /* Texte plus clair pour meilleur contraste */
+    --bg-color: #242428; /* Fond gris très foncé - couleur secondaire */
+    --card-bg: #2e2e35; /* Carte légèrement plus claire, assortie au fond */
+    --border-color: #383840; /* Bordure plus visible, adaptée à la nouvelle couleur */
+    --error-color: #ef4444;
+    --success-color: #65c2ad; /* Version plus claire du vert turquoise */
+    --stage-waiting: #475569; /* Plus contrasté */
+    --stage-active: #4ebfa6; /* Vert turquoise */
+    --stage-complete: #65c2ad; /* Version plus claire du vert turquoise */
+    --stage-error: #ef4444;
 }
 
 * {
@@ -44,23 +44,27 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     transition: background-color 0.3s, color 0.3s;
+    height: 100vh;
+    overflow: hidden; /* Éviter le scroll de la page entière */
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px; /* Augmenté pour utiliser plus d'espace */
     margin: 0 auto;
-    padding: 1rem;
+    padding: 0.75rem; /* Padding réduit */
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 header {
-    padding: 1.5rem 0;
-    margin-bottom: 2rem;
+    padding: 1rem 0;
+    margin-bottom: 1rem; /* Réduit */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0; /* Ne pas réduire la taille du header */
 }
 
 h1 {
@@ -68,18 +72,18 @@ h1 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1.8rem;
+    font-size: 1.5rem; /* Plus petit */
     margin: 0;
 }
 
 h2 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
+    margin-bottom: 1rem; /* Réduit */
+    font-size: 1.3rem; /* Plus petit */
 }
 
 h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.75rem;
+    font-size: 1.1rem; /* Plus petit */
+    margin-bottom: 0.5rem; /* Réduit */
     color: var(--primary-color);
 }
 
@@ -87,38 +91,59 @@ main {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    overflow: hidden;
 }
 
-/* Layout pour grands écrans */
-@media (min-width: 992px) {
-    main {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    
-    .card {
-        flex: 1;
-        min-width: 45%;
-        margin: 0.5rem;
-    }
-    
-    .progress-card, .result-card {
-        width: 100%;
-        flex-basis: 100%;
-    }
+/* Layout horizontal par défaut */
+.dashboard-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: stretch;
+    flex: 1;
+    overflow: hidden;
+}
+
+.left-column {
+    width: 30%; /* Plus étroit pour donner plus d'espace aux résultats */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.right-column {
+    width: 70%; /* Plus large pour les résultats */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .card {
     background-color: var(--card-bg);
     border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1rem; /* Padding réduit */
     transition: background-color 0.3s;
+    margin-bottom: 0.5rem; /* Marge réduite */
+    display: flex;
+    flex-direction: column;
 }
 
-.result-card, .progress-card {
-    margin-top: 1rem;
+.upload-card {
+    flex-shrink: 0; /* Ne pas réduire */
+    overflow-y: auto; /* Permettre le scroll si nécessaire */
+}
+
+.progress-card {
+    flex-shrink: 0; /* Ne pas réduire */
+}
+
+.result-card {
+    flex: 1; /* Prendre l'espace disponible */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-top: 0; /* Supprime la marge du haut */
 }
 
 /* Theme toggle */
@@ -130,9 +155,9 @@ main {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 60px;
-    height: 30px;
-    border-radius: 15px;
+    width: 50px; /* Plus petit */
+    height: 26px; /* Plus petit */
+    border-radius: 13px;
     background-color: var(--primary-color);
     position: relative;
     cursor: pointer;
@@ -142,14 +167,14 @@ main {
 .theme-toggle-label .sun-icon,
 .theme-toggle-label .moon-icon {
     color: white;
-    font-size: 14px;
+    font-size: 12px; /* Plus petit */
     z-index: 1;
 }
 
 .toggle-ball {
     position: absolute;
-    width: 24px;
-    height: 24px;
+    width: 20px; /* Plus petit */
+    height: 20px; /* Plus petit */
     border-radius: 50%;
     background-color: white;
     top: 3px;
@@ -162,65 +187,68 @@ main {
 }
 
 #theme-toggle-checkbox:checked + .theme-toggle-label .toggle-ball {
-    transform: translateX(30px);
+    transform: translateX(24px);
 }
 
-/* Drop area */
+/* Drop area - plus compacte */
 .drop-area {
     border: 2px dashed var(--primary-light);
     border-radius: 0.5rem;
-    padding: 3rem 2rem;
+    padding: 1rem 0.75rem; /* Padding réduit */
     text-align: center;
     background-color: var(--card-bg);
-    transition: all 0.3s ease;
-    margin-bottom: 1.5rem;
+    transition: all 0.2s ease;
+    margin-bottom: 0.75rem;
 }
 
 .drop-area.drag-active {
-    background-color: rgba(65, 168, 144, 0.1); /* Vert Cloud Temple avec opacité */
+    background-color: rgba(65, 168, 144, 0.08); /* Vert turquoise avec opacité */
     border-color: var(--primary-color);
 }
 
 .upload-icon {
     color: var(--primary-color);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .upload-limits {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #6b7280;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 /* Selected files */
 #selected-files {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .file-item {
     display: flex;
     align-items: center;
-    padding: 0.75rem;
+    padding: 0.5rem;
     border: 1px solid var(--border-color);
     border-radius: 0.25rem;
-    margin-bottom: 0.5rem;
-    background-color: rgba(65, 168, 144, 0.05); /* Vert Cloud Temple avec opacité */
+    margin-bottom: 0.25rem;
+    background-color: rgba(65, 168, 144, 0.05);
 }
 
 .file-item .file-icon {
     color: var(--primary-color);
-    margin-right: 0.75rem;
+    margin-right: 0.5rem;
 }
 
 .file-item .file-name {
     flex: 1;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .file-item .file-size {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #6b7280;
-    margin-right: 0.75rem;
+    margin-right: 0.5rem;
 }
 
 .file-item .file-action {
@@ -228,7 +256,7 @@ main {
     cursor: pointer;
     background: none;
     border: none;
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .file-item .file-preview-btn {
@@ -237,75 +265,58 @@ main {
     cursor: pointer;
     background: none;
     border: none;
-    font-size: 1rem;
-}
-
-/* PDF Preview */
-#pdf-preview-container {
-    margin-bottom: 1.5rem;
-    max-height: 400px;
-    overflow: auto;
-}
-
-#pdf-preview {
-    width: 100%;
-    height: 300px;
-    border: 1px solid var(--border-color);
-    background-color: rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: auto;
-}
-
-#pdf-preview canvas {
-    max-width: 100%;
-    height: auto;
+    font-size: 0.9rem;
 }
 
 /* Form controls */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     font-weight: 500;
+    font-size: 0.9rem;
 }
 
 textarea {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.5rem;
     border: 1px solid var(--border-color);
     border-radius: 0.25rem;
     font-family: inherit;
     resize: vertical;
     background-color: var(--card-bg);
     color: var(--text-color);
+    font-size: 0.9rem;
+    min-height: 4rem;
+    max-height: 6rem;
 }
 
 textarea:focus {
     outline: none;
     border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 0 2px rgba(65, 168, 144, 0.1); /* Vert turquoise avec opacité */
 }
 
 .btn {
     background-color: var(--primary-color);
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
+    padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
     display: inline-block;
     text-align: center;
+    font-size: 0.9rem;
 }
 
 .btn:hover {
     background-color: var(--primary-dark);
+    transform: translateY(-1px);
 }
 
 .btn:disabled {
@@ -317,16 +328,12 @@ textarea:focus {
     width: 100%;
 }
 
-#new-analysis-btn {
-    margin-top: 1.5rem;
-}
-
-/* Progress stages */
+/* Progress stages - compact */
 .progress-stages {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .progress-stage {
@@ -334,34 +341,33 @@ textarea:focus {
     flex-direction: column;
     align-items: center;
     position: relative;
-    width: 80px;
+    width: 60px; /* Plus petit */
 }
 
 .stage-icon {
-    width: 40px;
-    height: 40px;
+    width: 24px; /* Plus petit */
+    height: 24px; /* Plus petit */
     border-radius: 50%;
     background-color: var(--card-bg);
-    border: 2px solid var(--stage-waiting);
+    border: 1px solid var(--stage-waiting);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     color: var(--stage-waiting);
-    transition: all 0.3s;
+    transition: all 0.2s;
+    font-size: 0.7rem;
 }
 
 .stage-label {
-    font-size: 0.8rem;
+    font-size: 0.7rem; /* Plus petit */
     color: var(--stage-waiting);
     text-align: center;
     transition: color 0.3s;
 }
 
 .stage-status {
-    font-size: 0.6rem;
-    margin-top: 0.25rem;
-    color: var(--stage-waiting);
+    display: none; /* Caché pour économiser de l'espace */
 }
 
 .progress-stage.active .stage-icon {
@@ -374,20 +380,12 @@ textarea:focus {
     font-weight: 500;
 }
 
-.progress-stage.active .stage-status {
-    color: var(--stage-active);
-}
-
 .progress-stage.complete .stage-icon {
     border-color: var(--stage-complete);
     color: var(--stage-complete);
 }
 
 .progress-stage.complete .stage-label {
-    color: var(--stage-complete);
-}
-
-.progress-stage.complete .stage-status {
     color: var(--stage-complete);
 }
 
@@ -400,13 +398,9 @@ textarea:focus {
     color: var(--stage-error);
 }
 
-.progress-stage.error .stage-status {
-    color: var(--stage-error);
-}
-
 .progress-line {
     flex: 1;
-    height: 2px;
+    height: 1px; /* Plus fin */
     background-color: var(--stage-waiting);
     transition: background-color 0.3s;
 }
@@ -421,27 +415,28 @@ textarea:focus {
 
 .progress-detail {
     text-align: center;
-    margin-top: 1rem;
-    padding: 1rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
     border-radius: 0.25rem;
-    background-color: rgba(139, 92, 246, 0.05);
-    font-size: 0.9rem;
+    background-color: rgba(65, 168, 144, 0.05); /* Vert turquoise avec opacité */
+    font-size: 0.8rem;
+    border-left: 2px solid var(--primary-light);
 }
 
 /* Tabs pour multi PDF */
 .tabs {
     display: flex;
     border-bottom: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
     overflow-x: auto;
-    padding-bottom: 2px;
+    padding-bottom: 1px;
 }
 
 .tab {
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.75rem;
     border-radius: 0.25rem 0.25rem 0 0;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     white-space: nowrap;
     user-select: none;
     margin-right: 0.25rem;
@@ -452,7 +447,7 @@ textarea:focus {
 }
 
 .tab:hover {
-    background-color: rgba(65, 168, 144, 0.05); /* Vert Cloud Temple avec opacité */
+    background-color: rgba(65, 168, 144, 0.05); /* Vert turquoise avec opacité */
 }
 
 .tab.active {
@@ -473,38 +468,65 @@ textarea:focus {
     background-color: var(--card-bg);
 }
 
-/* Results */
+/* Results - sans hauteur maximale pour éviter le scroll */
 .hidden {
     display: none !important;
 }
 
-#result-content {
-    background-color: var(--card-bg);
-    padding: 1.5rem;
-    border-radius: 0.25rem;
-    white-space: pre-wrap;
-    line-height: 1.8;
-    max-height: 60vh;
-    overflow-y: auto;
+#result-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
 }
 
-/* Loader */
+#result-content {
+    background-color: var(--card-bg);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    border: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    overflow-y: auto; /* Permet le défilement uniquement dans cette zone si nécessaire */
+    flex: 1;
+}
+
+.waiting-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    color: #6b7280;
+    font-size: 1rem;
+    text-align: center;
+    height: 100%;
+}
+
+.waiting-message i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-light);
+}
+
+/* Loader - plus petit */
 .loader {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(139, 92, 246, 0.2);
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(65, 168, 144, 0.15); /* Vert turquoise avec opacité */
     border-radius: 50%;
     border-top-color: var(--primary-color);
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 0.5rem;
 }
 
 @keyframes spin {
@@ -516,14 +538,14 @@ textarea:focus {
 /* Streaming indicator */
 .typing-indicator {
     display: inline-flex;
-    gap: 4px;
+    gap: 3px;
     margin-left: 6px;
     vertical-align: middle;
 }
 
 .typing-indicator span {
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     background-color: var(--primary-color);
     display: inline-block;
@@ -549,74 +571,161 @@ textarea:focus {
     }
 }
 
-/* Markdown formatting */
+/* Markdown formatting - optimisé pour densité */
 #result-content h1, #result-content h2, #result-content h3 {
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-dark);
+}
+
+#result-content h1 {
+    font-size: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.2rem;
+}
+
+#result-content h2 {
+    font-size: 1.1rem;
+}
+
+#result-content h3 {
+    font-size: 1rem;
 }
 
 #result-content p {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 #result-content ul, #result-content ol {
-    margin-left: 1.5rem;
-    margin-bottom: 1rem;
+    margin-left: 1.25rem;
+    margin-bottom: 0.75rem;
 }
 
 #result-content pre {
-    background-color: rgba(0, 0, 0, 0.05);
-    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.04);
+    padding: 0.5rem;
     border-radius: 0.25rem;
     overflow-x: auto;
-    margin: 1rem 0;
+    margin: 0.5rem 0;
+    border-left: 2px solid var(--primary-light);
 }
 
 #result-content code {
     font-family: monospace;
+    font-size: 0.85rem;
 }
 
 #result-content table {
     border-collapse: collapse;
     width: 100%;
-    margin: 1rem 0;
+    margin: 0.75rem 0;
+    font-size: 0.85rem;
 }
 
 #result-content th, #result-content td {
     border: 1px solid var(--border-color);
-    padding: 0.5rem;
+    padding: 0.4rem 0.6rem;
     text-align: left;
 }
 
 #result-content th {
-    background-color: rgba(139, 92, 246, 0.1);
+    background-color: rgba(65, 168, 144, 0.08); /* Vert turquoise avec opacité */
+    font-weight: 600;
+}
+
+#result-content tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Styles pour les éléments mis en évidence */
+.highlight {
+    background-color: rgba(65, 168, 144, 0.15); /* Vert turquoise avec opacité */
+    padding: 0 3px;
+    border-radius: 3px;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+.alert-text {
+    color: var(--error-color);
+    font-weight: 500;
+}
+
+.date {
+    color: var(--primary-dark);
+    font-weight: 500;
+}
+
+.badge-id {
+    font-family: monospace;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+/* Style pour les tables markdown */
+.markdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0;
+    font-size: 0.85rem;
+}
+
+.markdown-table th {
+    background-color: rgba(65, 168, 144, 0.08); /* Vert turquoise avec opacité */
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5rem;
+}
+
+.markdown-table td {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.markdown-table tr:hover {
+    background-color: rgba(65, 168, 144, 0.04); /* Vert turquoise avec opacité */
 }
 
 .error-message {
     color: var(--error-color);
-    padding: 1rem;
+    padding: 0.75rem;
     border-radius: 0.25rem;
     border: 1px solid var(--error-color);
     background-color: rgba(239, 68, 68, 0.05);
+    font-size: 0.9rem;
 }
 
-/* Footer */
+/* Footer - plus compact */
 footer {
     text-align: center;
-    padding: 1rem 0;
-    margin-top: 2rem;
-    font-size: 0.875rem;
+    padding: 0.5rem 0;
+    margin-top: 1rem;
+    font-size: 0.8rem;
     color: #6b7280;
+    flex-shrink: 0;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
+/* Responsive - pour tout petit écran */
+@media (max-width: 768px) {
+    .dashboard-layout {
+        flex-direction: column;
+        height: auto;
+        overflow: auto;
+    }
+    
+    .left-column, .right-column {
+        width: 100%;
+    }
+    
     .card {
-        padding: 1.5rem;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
     }
     
     .drop-area {
-        padding: 2rem 1rem;
+        padding: 1rem 0.5rem;
     }
     
     .progress-stages {
@@ -625,10 +734,10 @@ footer {
     }
     
     .progress-stage {
-        min-width: 70px;
+        min-width: 50px;
     }
     
     h1 {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 }

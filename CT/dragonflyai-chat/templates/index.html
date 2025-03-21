@@ -11,23 +11,23 @@
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.111/pdf.worker.min.js';
     </script>
-    <style>
-        /* Styles spécifiques à la page avec onglets */
+        <style>
+        /* Styles spécifiques pour les onglets et le contenu */
         .tabs-container {
             display: flex;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
         
         .tab-button {
-            padding: 1rem 2rem;
+            padding: 0.75rem 1.5rem;
             background: transparent;
             border: none;
-            border-bottom: 3px solid transparent;
+            border-bottom: 2px solid transparent;
             cursor: pointer;
             font-weight: 500;
             color: var(--text-color);
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.2s;
         }
         
@@ -48,71 +48,14 @@
             display: block;
         }
         
-        /* Styles du chat */
-        .chat-container {
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            background-color: rgba(var(--primary-color-rgb), 0.05);
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .chat-input-container {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.25rem;
-            font-family: inherit;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-        }
-        
-        .message {
-            margin-bottom: 1rem;
-            max-width: 80%;
-        }
-        
-        .message-user {
-            align-self: flex-end;
-            margin-left: auto;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 1rem 1rem 0 1rem;
-            padding: 0.75rem 1rem;
-        }
-        
-        .message-assistant {
-            align-self: flex-start;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem 1rem 1rem 0;
-            padding: 0.75rem 1rem;
-        }
-        
-        .typing-indicator {
-            display: inline-flex;
-            gap: 4px;
-            margin-top: 0.5rem;
-        }
-        
+        /* Variables de couleurs RGB pour les opacités */
         :root {
-            --primary-color-rgb: 99, 102, 241;
+            --primary-color-rgb: 65, 168, 144; /* Vert turquoise */
         }
         
         [data-theme="dark"] {
-            --primary-color-rgb: 99, 102, 241;
+            --primary-color-rgb: 78, 191, 166; /* Vert turquoise légèrement plus clair */
+            --bg-color-rgb: 36, 36, 40; /* Gris très foncé pour les opacités */
         }
     </style>
 </head>
@@ -134,12 +77,12 @@
             <h2><i class="fas fa-file-pdf"></i> Analyse PDF</h2>
         </div>
         
-        <main>
-            <div id="pdf-tab">
-                <div class="card">
+        <main class="dashboard-layout">
+            <div class="left-column">
+                <div class="card upload-card">
                     <div class="drop-area" id="drop-area">
                         <div class="upload-icon">
-                            <i class="fas fa-file-pdf fa-3x"></i>
+                            <i class="fas fa-file-pdf fa-2x"></i>
                         </div>
                         <p>Glissez-déposez vos fichiers PDF ici</p>
                         <p>ou</p>
@@ -153,61 +96,58 @@
                         <div id="file-list"></div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="instruction">Instructions pour l'analyse (optionnel):</label>
-                        <textarea id="instruction" placeholder="Ex: Analyse ce document et résume les points clés" rows="3"></textarea>
-                    </div>
-                    
                     <button id="analyze-btn" class="btn" disabled>Analyser les documents</button>
                 </div>
+                <div class="card progress-card hidden" id="progress-container">
+                    <h3>Progression</h3>
+                    <div class="progress-stages">
+                        <div class="progress-stage" data-stage="upload">
+                            <div class="stage-icon"><i class="fas fa-upload"></i></div>
+                            <div class="stage-label">Envoi</div>
+                            <div class="stage-status waiting"><i class="fas fa-circle"></i></div>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-stage" data-stage="extract">
+                            <div class="stage-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="stage-label">Extraction</div>
+                            <div class="stage-status"><i class="fas fa-circle"></i></div>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-stage" data-stage="analyze">
+                            <div class="stage-icon"><i class="fas fa-brain"></i></div>
+                            <div class="stage-label">Analyse</div>
+                            <div class="stage-status"><i class="fas fa-circle"></i></div>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-stage" data-stage="complete">
+                            <div class="stage-icon"><i class="fas fa-check"></i></div>
+                            <div class="stage-label">Terminé</div>
+                            <div class="stage-status"><i class="fas fa-circle"></i></div>
+                        </div>
+                    </div>
+                    <div class="progress-detail" id="progress-detail">
+                        Préparation des fichiers...
+                    </div>
+                </div>
             </div>
             
-            
-            <div class="card progress-card hidden" id="progress-container">
-                <h3>Progression de l'analyse</h3>
-                <div class="progress-stages">
-                    <div class="progress-stage" data-stage="upload">
-                        <div class="stage-icon"><i class="fas fa-upload"></i></div>
-                        <div class="stage-label">Téléchargement</div>
-                        <div class="stage-status waiting"><i class="fas fa-circle"></i></div>
+            <div class="right-column">
+                <div class="card result-card" id="result-container">
+                    <h2>Résultat de l'analyse</h2>
+                    <div id="result-tabs" class="tabs hidden">
+                        <!-- Les onglets seront ajoutés dynamiquement en JavaScript -->
                     </div>
-                    <div class="progress-line"></div>
-                    <div class="progress-stage" data-stage="extract">
-                        <div class="stage-icon"><i class="fas fa-file-alt"></i></div>
-                        <div class="stage-label">Extraction</div>
-                        <div class="stage-status"><i class="fas fa-circle"></i></div>
+                    <div class="loader hidden" id="loader">
+                        <div class="spinner"></div>
+                        <p>Analyse en cours...</p>
                     </div>
-                    <div class="progress-line"></div>
-                    <div class="progress-stage" data-stage="analyze">
-                        <div class="stage-icon"><i class="fas fa-brain"></i></div>
-                        <div class="stage-label">Analyse IA</div>
-                        <div class="stage-status"><i class="fas fa-circle"></i></div>
+                    <div id="result-content">
+                        <div class="waiting-message">
+                            <i class="fas fa-arrow-left"></i> Veuillez sélectionner des fichiers PDF à analyser
+                        </div>
                     </div>
-                    <div class="progress-line"></div>
-                    <div class="progress-stage" data-stage="complete">
-                        <div class="stage-icon"><i class="fas fa-check"></i></div>
-                        <div class="stage-label">Terminé</div>
-                        <div class="stage-status"><i class="fas fa-circle"></i></div>
-                    </div>
+                    <button id="close-analysis-btn" class="btn hidden">Fermer l'analyse</button>
                 </div>
-                <div class="progress-detail" id="progress-detail">
-                    Préparation des fichiers...
-                </div>
-            </div>
-            
-            <div class="card result-card hidden" id="result-container">
-                <h2>Résultat de l'analyse</h2>
-                <div id="result-tabs" class="tabs hidden">
-                    <!-- Les onglets seront ajoutés dynamiquement en JavaScript -->
-                </div>
-                <div class="loader hidden" id="loader">
-                    <div class="spinner"></div>
-                    <p>Analyse en cours...</p>
-                </div>
-                <div id="result-content">
-                    <!-- Le contenu du streaming apparaîtra ici -->
-                </div>
-                <button id="close-analysis-btn" class="btn">Fermer l'analyse</button>
             </div>
         </main>
         
