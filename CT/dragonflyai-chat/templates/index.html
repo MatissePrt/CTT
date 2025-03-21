@@ -130,17 +130,12 @@
             </div>
         </header>
         
-        <div class="tabs-container">
-            <button class="tab-button active" data-tab="pdf-tab">
-                <i class="fas fa-file-pdf"></i> Analyse PDF
-            </button>
-            <button class="tab-button" data-tab="chat-tab">
-                <i class="fas fa-comment"></i> Chat
-            </button>
+        <div class="heading-container">
+            <h2><i class="fas fa-file-pdf"></i> Analyse PDF</h2>
         </div>
         
         <main>
-            <div id="pdf-tab" class="tab-content active">
+            <div id="pdf-tab">
                 <div class="card">
                     <div class="drop-area" id="drop-area">
                         <div class="upload-icon">
@@ -167,24 +162,6 @@
                 </div>
             </div>
             
-            <div id="chat-tab" class="tab-content">
-                <div class="card">
-                    <h2>Discussion avec DragonFly AI</h2>
-                    <div class="chat-container">
-                        <div class="chat-messages" id="chat-messages">
-                            <div class="message message-assistant">
-                                Bonjour ! Je suis DragonFly AI. Comment puis-je vous aider aujourd'hui ?
-                            </div>
-                        </div>
-                        <div class="chat-input-container">
-                            <input type="text" id="chat-input" class="chat-input" placeholder="Tapez votre message ici...">
-                            <button id="chat-send-btn" class="btn">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             
             <div class="card progress-card hidden" id="progress-container">
                 <h3>Progression de l'analyse</h3>

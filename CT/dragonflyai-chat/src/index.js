@@ -1,34 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import PDFAnalyzer from './PDFAnalyzer';
-import ChatComponent from './ChatComponent';
 import './styles.css';
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState('pdf'); // 'pdf' ou 'chat'
-
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1><i className="fas fa-dragon"></i> DragonFly AI</h1>
-        <div className="tabs">
-          <button 
-            className={`tab-btn ${activeTab === 'pdf' ? 'active' : ''}`}
-            onClick={() => setActiveTab('pdf')}
-          >
-            <i className="fas fa-file-pdf"></i> Analyse PDF
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
-            onClick={() => setActiveTab('chat')}
-          >
-            <i className="fas fa-comment"></i> Chat
-          </button>
-        </div>
+        <h1><i className="fas fa-dragon"></i> DragonFly AI PDF Analyzer</h1>
       </header>
       
       <main className="app-content">
-        {activeTab === 'pdf' ? <PDFAnalyzer /> : <ChatComponent />}
+        <PDFAnalyzer />
       </main>
       
       <footer className="app-footer">

@@ -1,4 +1,4 @@
-// DOM Elements - PDF Tab
+// DOM Elements
 const dropArea = document.getElementById('drop-area');
 const fileInput = document.getElementById('file-input');
 const analyzeBtn = document.getElementById('analyze-btn');
@@ -14,15 +14,6 @@ const progressDetail = document.getElementById('progress-detail');
 const resultTabs = document.getElementById('result-tabs');
 const themeToggle = document.getElementById('theme-toggle-checkbox');
 
-// DOM Elements - Chat Tab
-const chatInput = document.getElementById('chat-input');
-const chatSendBtn = document.getElementById('chat-send-btn');
-const chatMessages = document.getElementById('chat-messages');
-
-// DOM Elements - Tabs
-const tabButtons = document.querySelectorAll('.tab-button');
-const tabContents = document.querySelectorAll('.tab-content');
-
 // State
 let selectedFiles = [];
 let currentPreviewFile = null;
@@ -31,44 +22,6 @@ let analysisResults = {};
 let activeTabId = null;
 let eventSource = null;
 
-// Initialize
-function init() {
-    // Event listeners for drag and drop
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false);
-    });
-    
-    // Highlight drop area when file is dragged over
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropArea.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, unhighlight, false);
-    });
-    
-    // Handle dropped files
-    dropArea.addEventListener('drop', handleDrop, false);
-    
-    // Handle file input
-    fileInput.addEventListener('change', handleFileInput);
-    
-    // Analyze button
-    analyzeBtn.addEventListener('click', handleAnalyze);
-    
-    // Close analysis button
-    closeAnalysisBtn.addEventListener('click', resetUI);
-    
-    // Theme toggle
-    themeToggle.addEventListener('change', toggleTheme);
-    
-    // Check if user has a preferred theme
-    if (localStorage.getItem('theme') === 'dark' || 
-        (window.matchMedia('(prefers-color-scheme: dark)').matches && !localStorage.getItem('theme'))) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        themeToggle.checked = true;
-    }
-}
 
 // Theme toggle
 function toggleTheme() {
@@ -646,171 +599,9 @@ function resetUI() {
     }
 }
 
-// Tabs functionality
-function setupTabs() {
-    // Add event listeners to tab buttons
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const tabId = button.dataset.tab;
-            
-            // Deactivate all tabs
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            // Activate clicked tab
-            button.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-}
 
-// Chat functionality
-function setupChat() {
-    // Send message when button is clicked
-    chatSendBtn.addEventListener('click', sendChatMessage);
-    
-    // Send message when Enter key is pressed
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            sendChatMessage();
-        }
-    });
-}
-
-// Send chat message to API
-async function sendChatMessage() {
-    const message = chatInput.value.trim();
-    if (!message) return;
-    
-    // Add user message to chat
-    addChatMessage(message, 'user');
-    
-    // Clear input
-    chatInput.value = '';
-    
-    // Create typing indicator
-    const typingIndicator = document.createElement('div');
-    typingIndicator.className = 'typing-indicator';
-    typingIndicator.innerHTML = '<span></span><span></span><span></span>';
-    chatMessages.appendChild(typingIndicator);
-    
-    // Scroll to bottom
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    try {
-        // Call the API
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                messages: [
-                    // Only include the current message for simplicity
-                    // In a real app, you would include the conversation history
-                    { role: 'user', content: message }
-                ]
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Erreur lors de la communication avec l\'API');
-        }
-        
-        // Remove typing indicator
-        typingIndicator.remove();
-        
-        // Read the streamed response
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-        let fullResponse = '';
-        
-        while (true) {
-            const { value, done } = await reader.read();
-            
-            if (done) break;
-            
-            buffer += decoder.decode(value, { stream: true });
-            
-            // Process complete lines
-            const lines = buffer.split('\n\n');
-            buffer = lines.pop() || '';
-            
-            for (const line of lines) {
-                if (line === '[DONE]') continue;
-                if (!line.startsWith('{')) continue;
-                
-                try {
-                    const data = JSON.parse(line);
-                    
-                    if (data.choices && data.choices[0]) {
-                        const content = data.choices[0].delta?.content || 
-                                       (data.choices[0].message && data.choices[0].message.content);
-                        
-                        if (content) {
-                            fullResponse += content;
-                            
-                            // Update the existing assistant message if it exists
-                            updateAssistantMessage(fullResponse);
-                        }
-                    }
-                } catch (e) {
-                    console.error('Erreur lors du parsing JSON:', e, line);
-                }
-            }
-        }
-        
-        // Add the complete response if no streaming updates were made
-        if (!fullResponse) {
-            addChatMessage('Désolé, je n\'ai pas pu comprendre votre demande. Pourriez-vous reformuler?', 'assistant');
-        }
-        
-        // Scroll to bottom again
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        
-    } catch (error) {
-        console.error('Error:', error);
-        
-        // Remove typing indicator
-        if (typingIndicator.parentNode) {
-            typingIndicator.remove();
-        }
-        
-        // Add error message
-        addChatMessage('Désolé, une erreur s\'est produite. Veuillez réessayer.', 'assistant');
-    }
-}
-
-// Update the last assistant message or create a new one
-function updateAssistantMessage(content) {
-    // Get the last message that might be from the assistant
-    const lastMessage = chatMessages.querySelector('.message-assistant:last-child');
-    
-    if (lastMessage && lastMessage.classList.contains('message-assistant')) {
-        // Update existing message
-        lastMessage.querySelector('p') ? 
-            lastMessage.querySelector('p').innerHTML = formatMarkdown(content) :
-            lastMessage.innerHTML = `<p>${formatMarkdown(content)}</p>`;
-    } else {
-        // Add new message
-        addChatMessage(content, 'assistant');
-    }
-}
-
-// Add message to chat
-function addChatMessage(text, role) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message message-${role}`;
-    messageDiv.innerHTML = `<p>${role === 'assistant' ? formatMarkdown(text) : text}</p>`;
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-// Enhanced initialization
+// Initialize app
 function init() {
-    // Original PDF functionality
     // Event listeners for drag and drop
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, preventDefaults, false);
@@ -846,12 +637,6 @@ function init() {
         document.documentElement.setAttribute('data-theme', 'dark');
         themeToggle.checked = true;
     }
-    
-    // Setup tabs functionality
-    setupTabs();
-    
-    // Setup chat functionality
-    setupChat();
 }
 
 // Initialize on page load
