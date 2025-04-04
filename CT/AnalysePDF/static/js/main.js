@@ -13,6 +13,15 @@ const progressDetail = document.getElementById('progress-detail');
 const resultTabs = document.getElementById('result-tabs');
 const themeToggle = document.getElementById('theme-toggle-checkbox');
 
+// Settings Modal Elements
+const settingsBtn = document.getElementById('settings-btn');
+const settingsModal = document.getElementById('settings-modal-overlay');
+const closeModalBtn = document.querySelector('.modal-close-btn');
+const apiKeyInput = document.getElementById('api-key-input');
+const toggleApiKeyVisibilityBtn = document.getElementById('toggle-api-key-visibility');
+const saveApiKeyBtn = document.getElementById('save-api-key-btn');
+const currentApiKeyStatus = document.getElementById('current-api-key-status');
+
 // State
 let selectedFiles = [];
 let analysisResults = {};
@@ -615,6 +624,87 @@ function resetUI() {
     
 }
 
+// API Key Management Functions
+function showSettingsModal() {
+    settingsModal.classList.add('active');
+    // Load current API key status when opening modal
+    loadApiKeyStatus();
+}
+
+function hideSettingsModal() {
+    settingsModal.classList.remove('active');
+}
+
+function toggleApiKeyVisibility() {
+    if (apiKeyInput.type === 'password') {
+        apiKeyInput.type = 'text';
+        toggleApiKeyVisibilityBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+        apiKeyInput.type = 'password';
+        toggleApiKeyVisibilityBtn.innerHTML = '<i class="fas fa-eye"></i>';
+    }
+}
+
+function loadApiKeyStatus() {
+    currentApiKeyStatus.textContent = 'Chargement...';
+    
+    fetch('/api/api-key', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            currentApiKeyStatus.textContent = data.masked_key;
+        } else {
+            currentApiKeyStatus.textContent = 'Erreur lors du chargement';
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching API key status:', error);
+        currentApiKeyStatus.textContent = 'Erreur de connexion';
+    });
+}
+
+function saveApiKey() {
+    const apiKey = apiKeyInput.value.trim();
+    if (!apiKey) {
+        alert('Veuillez entrer une clé API valide');
+        return;
+    }
+    
+    saveApiKeyBtn.disabled = true;
+    saveApiKeyBtn.textContent = 'Sauvegarde en cours...';
+    
+    fetch('/api/api-key', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ api_key: apiKey })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            currentApiKeyStatus.textContent = data.masked_key;
+            alert('Clé API sauvegardée avec succès!');
+            apiKeyInput.value = '';
+        } else {
+            alert('Erreur: ' + (data.message || 'Une erreur est survenue'));
+        }
+    })
+    .catch(error => {
+        console.error('Error saving API key:', error);
+        alert('Erreur de connexion. Veuillez réessayer.');
+    })
+    .finally(() => {
+        saveApiKeyBtn.disabled = false;
+        saveApiKeyBtn.textContent = 'Sauvegarder la clé API';
+    });
+}
+
 // Initialize app
 function init() {
     // Event listeners for drag and drop
@@ -645,6 +735,21 @@ function init() {
     
     // Theme toggle
     themeToggle.addEventListener('change', toggleTheme);
+    
+    // Settings modal
+    settingsBtn.addEventListener('click', showSettingsModal);
+    closeModalBtn.addEventListener('click', hideSettingsModal);
+    
+    // API Key management
+    toggleApiKeyVisibilityBtn.addEventListener('click', toggleApiKeyVisibility);
+    saveApiKeyBtn.addEventListener('click', saveApiKey);
+    
+    // Close modal when clicking outside of it
+    settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+            hideSettingsModal();
+        }
+    });
     
     // Check if user has a preferred theme
     if (localStorage.getItem('theme') === 'dark' || 

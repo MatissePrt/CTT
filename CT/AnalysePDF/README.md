@@ -8,15 +8,15 @@ Application web Flask qui permet d'analyser des documents PDF contenant des jour
 - Extraction automatique du texte des PDF
 - Analyse des journaux d'accès physique pour détecter les activités suspectes
 - Interface avec mode clair/sombre
-- Support du streaming pour les réponses en temps réel
 - Présentation des résultats dans un format structuré et facile à lire
+- Gestion de la clé API directement depuis l'interface utilisateur
 
 ## Prérequis
 
 - Python 3.8 ou supérieur
 - Flask
 - PyPDF2
-- Clé API DragonFly (configurée dans le code)
+- Clé API DragonFly
 
 ## Installation
 
@@ -26,6 +26,23 @@ Application web Flask qui permet d'analyser des documents PDF contenant des jour
 ```bash
 pip install -r requirements.txt
 ```
+
+## Configuration de la clé API
+
+L'application nécessite une clé API DragonFly pour fonctionner. Vous pouvez configurer votre clé API de deux façons:
+
+### Via l'interface utilisateur (recommandé)
+
+1. Lancez l'application (voir section suivante)
+2. Cliquez sur l'icône d'engrenage (⚙️) en haut à droite de l'interface
+3. Dans la fenêtre de configuration qui s'ouvre, entrez votre clé API dans le champ prévu à cet effet
+4. Cliquez sur "Sauvegarder la clé API"
+
+Votre clé sera stockée de manière sécurisée dans votre session et utilisée pour toutes les requêtes ultérieures.
+
+### Via le code source
+
+Alternativement, vous pouvez modifier directement la variable `DEFAULT_API_KEY` dans le fichier `app.py`.
 
 ## Démarrage de l'application
 
