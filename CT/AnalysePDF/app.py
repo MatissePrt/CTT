@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
 
 # Configuration - API key should be stored in environment variables in production
-MODEL_ID = "neuralmagic/Llama-3.1-Nemotron-70B-Instruct-HF-FP8-dynamic"
+MODEL_ID = "LLama 3.3 70b"
 DEFAULT_API_KEY = ""
 API_URL = "https://ai.dragonflygroup.fr/api/v1/chat/completions"
 
